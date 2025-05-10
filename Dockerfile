@@ -1,4 +1,3 @@
-# Use a Python 3.11 base image
 FROM python:3.11-slim
 
 # Set environment variables
@@ -8,23 +7,21 @@ ENV PYTHONUNBUFFERED=1
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies needed to compile native Python modules
+# Install system dependencies (just enough to compile pip packages)
 RUN apt-get update && apt-get install -y \
     gcc \
     libffi-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy dependency list
+# Install Python dependencies
 COPY requirements.txt .
-
-# Install Python dependencies (swisseph will be installed here)
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Copy app source
+# Copy project files
 COPY . .
 
-# Expose the FastAPI port
+# Expose app port
 EXPOSE 8000
 
-# Run the FastAPI app
+# Run FastAPI app using Uvicorn
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
