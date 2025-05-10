@@ -8,23 +8,23 @@ ENV PYTHONUNBUFFERED=1
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies needed to compile native Python modules
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    libswisseph-dev \
+    gcc \
+    libffi-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy dependency list
 COPY requirements.txt .
 
-# Install Python dependencies
+# Install Python dependencies (swisseph will be installed here)
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
 # Copy app source
 COPY . .
 
-# Expose the default FastAPI port
+# Expose the FastAPI port
 EXPOSE 8000
 
-# Start the app using uvicorn
+# Run the FastAPI app
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
