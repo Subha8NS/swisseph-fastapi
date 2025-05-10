@@ -19,11 +19,16 @@ app.add_middleware(
 @app.get("/")
 def read_root():
     try:
-        version = swe.version
-        return {"Swiss Ephemeris Version": swe.__version__}
+        # Attempt a basic operation to confirm swisseph is working
+        import swisseph as swe
+        jd = swe.julday(2025, 5, 10)  # simple call to confirm functionality
+        return {
+            "message": "Swiss Ephemeris API is up and running.",
+            "sample_julian_day": jd
+        }
     except Exception as e:
-        return {"error": f"Error getting Swiss Ephemeris version: {str(e)}"}
-    
+        return {"error": f"Swiss Ephemeris not responding: {str(e)}"}
+
 class RetrogradeMotionResponse(BaseModel):
     planet: str
     is_retrograde: bool
