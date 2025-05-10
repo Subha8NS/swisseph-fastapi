@@ -1,0 +1,6 @@
+# Virtual env
+venv/
+.env
+# Byte-compiled / cache
+__pycache__/
+*.pyc
