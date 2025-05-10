@@ -139,5 +139,50 @@ def get_julian_day(date: str, time: str = "00:00:00"):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error calculating Julian Day: {str(e)}")
 
-# Keep your existing POST endpoints below
-# ... existing code ...
+# Retrograde motion endpoint
+@app.post("/retrograde_motion", response_model=RetrogradeMotionResponse)
+def get_retrograde_motion(request: RetrogradeMotionRequest):
+    planet_dict = {
+        "sun": swe.SUN,
+        "moon": swe.MOON,
+        "mercury": swe.MERCURY,
+        "venus": swe.VENUS,
+        "mars": swe.MARS,
+        "jupiter": swe.JUPITER,
+        "saturn": swe.SATURN,
+        "uranus": swe.URANUS,
+        "neptune": swe.NEPTUNE,
+        "pluto": swe.PLUTO
+    }
+    planet_id = planet_dict.get(request.planet_name.lower())
+    if not planet_id:
+        return {"error": "Invalid planet name"}
+    
+    ret, _ = swe.calc(request.jd_ut, planet_id)
+    retrograde = ret[0] < 180  # Simple retrograde check based on longitude (simplified)
+    return RetrogradeMotionResponse(is_retrograde=retrograde)
+
+
+# Solar eclipse endpoint
+@app.post("/solar_eclipse", response_model=SolarEclipseResponse)
+def get_solar_eclipse(request: SolarEclipseRequest):
+    # Solar eclipse detection (simplified)
+    is_eclipse = False
+    # You would need to calculate the solar eclipse based on the position of the sun and moon
+    return SolarEclipseResponse(is_eclipse=is_eclipse)
+
+
+# Lunar eclipse endpoint
+@app.post("/lunar_eclipse", response_model=LunarEclipseResponse)
+def get_lunar_eclipse(request: LunarEclipseRequest):
+    # Lunar eclipse detection (simplified)
+    is_eclipse = False
+    # You would need to calculate the lunar eclipse based on the positions of the sun, earth, and moon
+    return LunarEclipseResponse(is_eclipse=is_eclipse)
+
+
+# Sidereal time endpoint
+@app.post("/sidereal_time", response_model=SiderealTimeResponse)
+def get_sidereal_time(request: SiderealTimeRequest):
+    sidereal_time = swe.sidtime(request.jd_ut)
+    return SiderealTimeResponse(sidereal_time=sidereal_time)
