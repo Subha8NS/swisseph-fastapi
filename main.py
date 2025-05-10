@@ -243,3 +243,7 @@ def get_lunar_eclipse(request: LunarEclipseRequest):
 def get_sidereal_time(request: SiderealTimeRequest):
     sidereal_time = swe.sidtime(request.jd_ut)
     return SiderealTimeResponse(sidereal_time=sidereal_time)
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))  # fallback to 8000 for local
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
