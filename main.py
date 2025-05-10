@@ -23,8 +23,60 @@ def read_root():
         return {"Swiss Ephemeris Version": version}
     except Exception as e:
         return {"error": f"Error getting Swiss Ephemeris version: {str(e)}"}
+    
+class RetrogradeMotionResponse(BaseModel):
+    planet: str
+    is_retrograde: bool
+    speed: float  # degrees/day
+    date: str     # ISO format, e.g., '2025-05-10'
 
+class RetrogradeMotionRequest(BaseModel):
+    planet: str         # e.g., "Mercury"
+    date: str           # ISO format: "2025-05-10"
 # GET endpoint for planets
+class SolarEclipseResponse(BaseModel):
+    eclipse_type: str               # e.g., "Total", "Partial", "Annular"
+    date: str                       # ISO format: "2025-10-14"
+    time_utc: str                   # e.g., "17:22:00"
+    magnitude: Optional[float]      # Fraction of the sun's diameter obscured
+    central_duration: Optional[str]  # e.g., "00:03:25"
+    visible_from: Optional[str]     # e.g., "North America"
+
+class SolarEclipseRequest(BaseModel):
+    date: str                   # e.g., "2025-10-14" (start search date)
+    latitude: Optional[float]   # optional location to check visibility
+    longitude: Optional[float]  # optional location to check visibility
+    search_forward: Optional[bool] = True  # search direction (default forward)
+
+class LunarEclipseResponse(BaseModel):
+    eclipse_type: str               # "Total", "Partial", or "Penumbral"
+    date: str                       # ISO format: "2025-03-14"
+    time_utc: str                   # Time of greatest eclipse (e.g., "03:26:00")
+    magnitude: Optional[float]      # Fraction of the Moon's diameter immersed
+    duration: Optional[str]         # Duration of the eclipse (e.g., "03:42:00")
+    visible_from: Optional[str]     # Description or region, e.g., "Asia, Europe"
+    
+class LunarEclipseRequest(BaseModel):
+    date: str                   # Start date for the eclipse search, e.g., "2025-03-14"
+    latitude: Optional[float]   # Optional: observer's latitude
+    longitude: Optional[float]  # Optional: observer's longitude
+    search_forward: Optional[bool] = True  # True to search forward in time
+
+class SiderealTimeResponse(BaseModel):
+    date: str                 # ISO format: "2025-05-10"
+    time_utc: str             # e.g., "16:45:00"
+    longitude: float          # In decimal degrees
+    sidereal_time: str        # e.g., "10h 35m 28s"
+    sidereal_time_deg: float  # Sidereal time in decimal degrees
+    type: str                 # "GST" (Greenwich) or "LST" (Local)
+
+class SiderealTimeRequest(BaseModel):
+    date: str                   # Start date for the sidereal time calculation (e.g., "2025-05-10")
+    time_utc: str               # Time in UTC (e.g., "16:45:00")
+    longitude: Optional[float]  # Observer's longitude (optional for LST)
+    type: str                   # "GST" for Greenwich Sidereal Time or "LST" for Local Sidereal Time
+
+
 @app.get("/planets")
 def get_planets(date: str, time: str = "00:00:00"):
     try:
