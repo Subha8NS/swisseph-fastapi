@@ -5,7 +5,10 @@ import datetime
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-
+@app.get("/")
+def read_root():
+    return {"Swiss Ephemeris Version": swe.swe_version()}
+    
 # CORS
 app.add_middleware(
     CORSMiddleware,
