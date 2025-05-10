@@ -20,7 +20,7 @@ app.add_middleware(
 def read_root():
     try:
         version = swe.version
-        return {"Swiss Ephemeris Version": version}
+        return {"Swiss Ephemeris Version": swe.__version__}
     except Exception as e:
         return {"error": f"Error getting Swiss Ephemeris version: {str(e)}"}
     
