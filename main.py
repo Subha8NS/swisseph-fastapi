@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-import swisseph as swe
+import pyswisseph as swe
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 import os
