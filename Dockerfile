@@ -25,4 +25,4 @@ EXPOSE 8000
 
 # Run FastAPI app using Uvicorn
 # Use shell to expand ${PORT}
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT}"]
